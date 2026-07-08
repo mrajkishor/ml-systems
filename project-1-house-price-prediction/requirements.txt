@@ -1,0 +1,12 @@
+numpy
+pandas
+scipy
+matplotlib
+plotly
+scikit-learn
+xgboost
+optuna
+shap
+fastapi
+uvicorn[standard]
+pytest
