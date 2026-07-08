@@ -20,14 +20,14 @@ Found it in [projects.md](projects.md) — **Project 1: House Price Prediction �
 - [x] Outlier treatment
 
 **Modeling**
-- [ ] Linear Regression (baseline)
-- [ ] Ridge Regression
-- [ ] Lasso Regression
-- [ ] Random Forest
-- [ ] XGBoost
-- [ ] Cross-validation + bias-variance analysis
-- [ ] Metrics: MAE, RMSE, R²
-- [ ] Hyperparameter tuning with Optuna (Bayesian optimization)
+- [x] Linear Regression (baseline)
+- [x] Ridge Regression
+- [x] Lasso Regression
+- [x] Random Forest
+- [x] XGBoost
+- [x] Cross-validation + bias-variance analysis
+- [x] Metrics: MAE, RMSE, R²
+- [x] Hyperparameter tuning with Optuna (Bayesian optimization)
 
 **Explainability**
 - [ ] SHAP values for model interpretability

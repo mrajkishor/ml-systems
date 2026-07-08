@@ -31,6 +31,8 @@ reports/figures/*
 *.pkl
 *.joblib
 mlruns/
+artifacts/*
+!artifacts/.gitkeep
 
 # Testing / tooling
 .pytest_cache/
