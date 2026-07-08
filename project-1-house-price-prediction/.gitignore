@@ -23,6 +23,10 @@ data/processed/*
 # Notebooks
 notebooks/.ipynb_checkpoints/
 
+# Generated EDA reports/figures
+reports/figures/*
+!reports/figures/.gitkeep
+
 # Models / artifacts
 *.pkl
 *.joblib
