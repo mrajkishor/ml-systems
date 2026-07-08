@@ -3,21 +3,21 @@ Found it in [projects.md](projects.md) — **Project 1: House Price Prediction �
 ## Project 1 Checklist: House Price Prediction — Full ML Pipeline
 
 **Setup**
-- [ ] Repo structure: clean modules/packages, not a single notebook
-- [ ] Git initialized, `.gitignore`, meaningful commit history
-- [ ] `pytest` test suite scaffolded
-- [ ] Logging configured
+- [x] Repo structure: clean modules/packages, not a single notebook
+- [x] Git initialized, `.gitignore`, meaningful commit history
+- [x] `pytest` test suite scaffolded
+- [x] Logging configured
 
 **Data & EDA**
-- [ ] Load Kaggle Ames Housing dataset
-- [ ] Exploratory Data Analysis with Matplotlib/Plotly
-- [ ] Statistical hypothesis testing / confidence intervals in EDA (§1.3)
+- [x] Load Kaggle Ames Housing dataset
+- [x] Exploratory Data Analysis with Matplotlib/Plotly
+- [x] Statistical hypothesis testing / confidence intervals in EDA (§1.3)
 
 **Feature Engineering**
-- [ ] Missing value imputation
-- [ ] Categorical encoding
-- [ ] Feature scaling
-- [ ] Outlier treatment
+- [x] Missing value imputation
+- [x] Categorical encoding
+- [x] Feature scaling
+- [x] Outlier treatment
 
 **Modeling**
 - [ ] Linear Regression (baseline)
