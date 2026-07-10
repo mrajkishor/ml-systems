@@ -31,6 +31,10 @@ flowchart LR
 The feature pipeline is fit once on the training split and persisted (`artifacts/`), so the
 exact same imputation/encoding/scaling is replayed at inference time — no train/serve skew.
 
+For a clickable, animated version of this diagram — step through each stage and see the real
+metrics produced at that point — open [`docs/architecture.html`](docs/architecture.html)
+directly in a browser (no server needed).
+
 ## Results
 
 Test-set metrics (20% holdout, 5-fold CV for the mean/std columns), predictions trained on
