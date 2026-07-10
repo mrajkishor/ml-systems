@@ -35,6 +35,8 @@ For a clickable, animated version of this diagram — step through each stage an
 metrics produced at that point — open [`docs/architecture.html`](docs/architecture.html)
 directly in a browser (no server needed).
 
+![Pipeline flow through all 8 stages](docs/images/pipeline_flow.gif)
+
 ## Results
 
 Test-set metrics (20% holdout, 5-fold CV for the mean/std columns), predictions trained on
