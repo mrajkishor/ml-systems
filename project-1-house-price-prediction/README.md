@@ -17,15 +17,15 @@ of design decisions and tradeoffs: [docs/WRITEUP.md](docs/WRITEUP.md).
 
 ```mermaid
 flowchart LR
-    A[Kaggle Ames Housing\n(OpenML fallback, no creds needed)] --> B[EDA\nmissing values, distributions,\nhypothesis tests, CIs]
-    B --> C[Feature Engineering\ndomain imputation, ordinal +\none-hot encoding, scaling,\noutlier removal]
-    C --> D[Model Training\nLinear/Ridge/Lasso/RF/XGBoost\n5-fold CV, log1p target]
-    D --> E[Optuna Tuning\nBayesian search, XGBoost]
-    E --> F[SHAP Explainability\nTreeExplainer]
-    D --> G[artifacts/\npipeline + model + feature_columns]
-    G --> H[FastAPI /predict]
-    H --> I[Docker image\nmodel trained at build time]
-    I --> J[Railway / Render]
+    A["Kaggle Ames Housing<br/>(OpenML fallback, no creds needed)"] --> B["EDA<br/>missing values, distributions,<br/>hypothesis tests, CIs"]
+    B --> C["Feature Engineering<br/>domain imputation, ordinal +<br/>one-hot encoding, scaling,<br/>outlier removal"]
+    C --> D["Model Training<br/>Linear/Ridge/Lasso/RF/XGBoost<br/>5-fold CV, log1p target"]
+    D --> E["Optuna Tuning<br/>Bayesian search, XGBoost"]
+    E --> F["SHAP Explainability<br/>TreeExplainer"]
+    D --> G["artifacts/<br/>pipeline + model + feature_columns"]
+    G --> H["FastAPI /predict"]
+    H --> I["Docker image<br/>model trained at build time"]
+    I --> J["Railway / Render"]
 ```
 
 The feature pipeline is fit once on the training split and persisted (`artifacts/`), so the
