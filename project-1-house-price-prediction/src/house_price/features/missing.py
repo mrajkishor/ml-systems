@@ -33,12 +33,15 @@ def impute_domain_missing_values(df: pd.DataFrame) -> pd.DataFrame:
             )
         df["LotFrontage"] = df["LotFrontage"].fillna(df["LotFrontage"].median())
 
+    # Guarded with notna().any(): a single-row inference request can have a column that's
+    # entirely NaN, where there's no local median/mode to fall back on. Leave it NaN and
+    # let the pipeline's fitted SimpleImputer (trained-set statistics) handle it downstream.
     numeric_cols = df.select_dtypes(include="number").columns
-    df[numeric_cols] = df[numeric_cols].apply(lambda s: s.fillna(s.median()))
+    df[numeric_cols] = df[numeric_cols].apply(lambda s: s.fillna(s.median()) if s.notna().any() else s)
 
     categorical_cols = df.select_dtypes(include="object").columns
     for col in categorical_cols:
-        if df[col].isna().any():
+        if df[col].isna().any() and df[col].notna().any():
             df[col] = df[col].fillna(df[col].mode().iloc[0])
 
     return df

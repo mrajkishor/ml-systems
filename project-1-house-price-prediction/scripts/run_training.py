@@ -1,4 +1,5 @@
 import logging
+import os
 
 import joblib
 import numpy as np
@@ -27,9 +28,10 @@ def main() -> None:
             f"${r.test_metrics.mae:<10,.0f} ${r.test_metrics.rmse:<10,.0f} {r.test_metrics.r2:<8.3f}"
         )
 
-    print("\nTuning XGBoost with Optuna (Bayesian optimization)...")
+    n_trials = int(os.environ.get("OPTUNA_TRIALS", "30"))
+    print(f"\nTuning XGBoost with Optuna ({n_trials} trials, Bayesian optimization)...")
     y_train_log = np.log1p(data.y_train)
-    study = tune_xgboost(data.X_train, y_train_log, n_trials=30)
+    study = tune_xgboost(data.X_train, y_train_log, n_trials=n_trials)
     print(f"Best params: {study.best_params}")
     print(f"Best CV RMSE(log): {study.best_value:.4f}")
 
@@ -53,7 +55,8 @@ def main() -> None:
     ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
     joblib.dump(data.pipeline, ARTIFACTS_DIR / "feature_pipeline.joblib")
     joblib.dump(tuned_model, ARTIFACTS_DIR / "model.joblib")
-    print(f"\nSaved pipeline and tuned model to {ARTIFACTS_DIR}")
+    joblib.dump(data.feature_columns, ARTIFACTS_DIR / "feature_columns.joblib")
+    print(f"\nSaved pipeline, tuned model, and feature columns to {ARTIFACTS_DIR}")
 
 
 if __name__ == "__main__":

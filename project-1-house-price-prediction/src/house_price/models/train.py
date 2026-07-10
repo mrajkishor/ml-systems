@@ -23,6 +23,7 @@ class TrainTestData:
     y_train: pd.Series
     y_test: pd.Series
     pipeline: object
+    feature_columns: list[str]
 
 
 def prepare_train_test_data(
@@ -54,6 +55,7 @@ def prepare_train_test_data(
         y_train=y_train.reset_index(drop=True),
         y_test=y_test.reset_index(drop=True),
         pipeline=pipeline,
+        feature_columns=list(X_train_raw.columns),
     )
 
 

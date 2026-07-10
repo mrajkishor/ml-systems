@@ -33,9 +33,9 @@ Found it in [projects.md](projects.md) — **Project 1: House Price Prediction �
 - [x] SHAP values for model interpretability
 
 **Serving & Deployment**
-- [ ] FastAPI REST endpoint for predictions
-- [ ] Dockerize the app
-- [ ] Deploy to Railway or Render (free tier)
+- [x] FastAPI REST endpoint for predictions
+- [x] Dockerize the app
+- [ ] Deploy to Railway or Render (free tier) — needs your own account; steps documented in project README
 
 **Polish (from "What Makes a Project Stand Out")**
 - [ ] README with problem statement, architecture diagram, results
