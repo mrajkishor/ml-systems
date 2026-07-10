@@ -38,10 +38,10 @@ Found it in [projects.md](projects.md) — **Project 1: House Price Prediction �
 - [ ] Deploy to Railway or Render (free tier) — needs your own account; steps documented in project README
 
 **Polish (from "What Makes a Project Stand Out")**
-- [ ] README with problem statement, architecture diagram, results
-- [ ] Live demo link
-- [ ] Before/after metrics (baseline vs. tuned model)
-- [ ] Write-up explaining decisions/tradeoffs
-- [ ] 2-minute demo video
+- [x] README with problem statement, architecture diagram, results
+- [ ] Live demo link — blocked on Railway/Render deployment (needs your account)
+- [x] Before/after metrics (baseline vs. tuned model)
+- [x] Write-up explaining decisions/tradeoffs (see `docs/WRITEUP.md`)
+- [ ] 2-minute demo video — needs you to record it
 
 **Key skills this proves:** EDA, feature engineering, ensemble models, model explainability, basic deployment.
