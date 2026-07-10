@@ -30,7 +30,7 @@ Found it in [projects.md](projects.md) â€” **Project 1: House Price Prediction â
 - [x] Hyperparameter tuning with Optuna (Bayesian optimization)
 
 **Explainability**
-- [ ] SHAP values for model interpretability
+- [x] SHAP values for model interpretability
 
 **Serving & Deployment**
 - [ ] FastAPI REST endpoint for predictions

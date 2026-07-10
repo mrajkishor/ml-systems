@@ -58,7 +58,7 @@ def build_feature_pipeline(df: pd.DataFrame) -> Pipeline:
     ])
 
     return Pipeline([
-        ("domain_prep", FunctionTransformer(_domain_preprocess)),
+        ("domain_prep", FunctionTransformer(_domain_preprocess, feature_names_out="one-to-one")),
         ("column_transform", column_transformer),
     ])
 
