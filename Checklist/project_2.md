@@ -17,16 +17,16 @@
 - [x] Threshold tuning
 
 **Modeling**
-- [ ] Logistic Regression (baseline)
-- [ ] Random Forest
-- [ ] LightGBM
-- [ ] CatBoost
-- [ ] Stratified k-fold cross-validation
-- [ ] Precision-Recall curves, AUC-ROC analysis
-- [ ] Hyperparameter tuning (grid/random search), learning curves
+- [x] Logistic Regression (baseline)
+- [x] Random Forest
+- [x] LightGBM
+- [x] CatBoost
+- [x] Stratified k-fold cross-validation
+- [x] Precision-Recall curves, AUC-ROC analysis
+- [x] Hyperparameter tuning (grid/random search), learning curves
 
 **Business Interpretation**
-- [ ] Cost-sensitive evaluation (business framing of false positives/negatives)
+- [x] Cost-sensitive evaluation (business framing of false positives/negatives)
 
 **Serving & Deployment**
 - [ ] Streamlit dashboard showing predictions + explanations

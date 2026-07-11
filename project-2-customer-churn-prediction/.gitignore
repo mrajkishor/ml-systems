@@ -33,6 +33,7 @@ reports/figures/*
 mlruns/
 artifacts/*
 !artifacts/.gitkeep
+catboost_info/
 
 # Testing / tooling
 .pytest_cache/
