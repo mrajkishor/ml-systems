@@ -32,10 +32,10 @@
 - [x] Streamlit dashboard showing predictions + explanations
 
 **Polish (from "What Makes a Project Stand Out")**
-- [ ] README with problem statement, architecture diagram, results
-- [ ] Live demo link
-- [ ] Before/after metrics (baseline vs. tuned model)
-- [ ] Write-up explaining decisions/tradeoffs
-- [ ] 2-minute demo video
+- [x] README with problem statement, architecture diagram, results
+- [ ] Live demo link — blocked on Streamlit Community Cloud/Render deployment (needs your account)
+- [x] Before/after metrics (tuning impact, class_weight vs SMOTE, threshold choice)
+- [x] Write-up explaining decisions/tradeoffs (see `docs/WRITEUP.md`)
+- [ ] 2-minute demo video — needs you to record it
 
 **Key skills this proves:** Imbalanced learning, business framing, model evaluation depth.
