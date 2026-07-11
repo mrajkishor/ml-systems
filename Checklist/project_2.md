@@ -12,9 +12,9 @@
 - [x] Class imbalance analysis (churn rate, class distribution)
 
 **Feature Engineering**
-- [ ] Encoding, scaling, missing value handling
-- [ ] Handle class imbalance: SMOTE, class weights
-- [ ] Threshold tuning
+- [x] Encoding, scaling, missing value handling
+- [x] Handle class imbalance: SMOTE, class weights
+- [x] Threshold tuning
 
 **Modeling**
 - [ ] Logistic Regression (baseline)
