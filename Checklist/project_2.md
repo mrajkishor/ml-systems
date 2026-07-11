@@ -1,15 +1,15 @@
 ## Project 2 Checklist: Customer Churn Prediction with Imbalanced Data
 
 **Setup**
-- [ ] Repo structure: clean modules/packages, not a single notebook
-- [ ] Git initialized, `.gitignore`, meaningful commit history
-- [ ] `pytest` test suite scaffolded
-- [ ] Logging configured
+- [x] Repo structure: clean modules/packages, not a single notebook
+- [x] Git initialized, `.gitignore`, meaningful commit history
+- [x] `pytest` test suite scaffolded
+- [x] Logging configured
 
 **Data & EDA**
-- [ ] Load telecom/bank churn dataset
-- [ ] Exploratory Data Analysis with Pandas/Matplotlib
-- [ ] Class imbalance analysis (churn rate, class distribution)
+- [x] Load telecom/bank churn dataset
+- [x] Exploratory Data Analysis with Pandas/Matplotlib
+- [x] Class imbalance analysis (churn rate, class distribution)
 
 **Feature Engineering**
 - [ ] Encoding, scaling, missing value handling
