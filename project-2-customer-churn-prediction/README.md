@@ -30,6 +30,8 @@ flowchart LR
 The feature pipeline is fit once on the training split and persisted (`artifacts/`), so the
 exact same imputation/encoding/scaling is replayed at inference time in the dashboard.
 
+![Pipeline flow through all 9 stages](docs/images/pipeline_flow.gif)
+
 ## Results
 
 Test-set metrics (20% stratified holdout, 5-fold stratified CV for the CV column):
