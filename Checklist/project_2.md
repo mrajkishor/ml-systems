@@ -29,7 +29,7 @@
 - [x] Cost-sensitive evaluation (business framing of false positives/negatives)
 
 **Serving & Deployment**
-- [ ] Streamlit dashboard showing predictions + explanations
+- [x] Streamlit dashboard showing predictions + explanations
 
 **Polish (from "What Makes a Project Stand Out")**
 - [ ] README with problem statement, architecture diagram, results
