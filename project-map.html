@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI/ML Projects — Real-World Impact Map</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --accent: #58a6ff;
+    --b2b: #3fb950;
+    --b2c: #f78166;
+    --android: #a371f7;
+    --impact-high: #ffa657;
+    --impact-med: #e3b341;
+    --impact-low: #58a6ff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 32px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -20%, rgba(88,166,255,.15), transparent);
+    pointer-events: none;
+  }
+  header h1 {
+    font-size: clamp(1.6rem, 4vw, 2.8rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, #58a6ff 0%, #a371f7 50%, #f78166 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+  header p { color: var(--text-muted); font-size: 1rem; max-width: 640px; margin: 0 auto; }
+
+  /* ── Stats bar ── */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 24px 32px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat { text-align: center; }
+  .stat-num { font-size: 2rem; font-weight: 700; line-height: 1; }
+  .stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; margin-top: 2px; }
+  .stat-b2b .stat-num { color: var(--b2b); }
+  .stat-b2c .stat-num { color: var(--b2c); }
+  .stat-android .stat-num { color: var(--android); }
+  .stat-all .stat-num { color: var(--accent); }
+
+  /* ── Controls ── */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 32px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(12px);
+  }
+  .filter-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; white-space: nowrap; }
+  .filter-group { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip.active-all { background: var(--accent); border-color: var(--accent); color: #0d1117; font-weight: 600; }
+  .chip.active-b2b { background: var(--b2b); border-color: var(--b2b); color: #0d1117; font-weight: 600; }
+  .chip.active-b2c { background: var(--b2c); border-color: var(--b2c); color: #0d1117; font-weight: 600; }
+  .chip.active-android { background: var(--android); border-color: var(--android); color: #fff; font-weight: 600; }
+  .chip.active-high { background: var(--impact-high); border-color: var(--impact-high); color: #0d1117; font-weight: 600; }
+
+  .search-box {
+    margin-left: auto;
+    position: relative;
+  }
+  .search-box input {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.88rem;
+    padding: 7px 12px 7px 34px;
+    outline: none;
+    width: 200px;
+    transition: border-color .2s;
+  }
+  .search-box input:focus { border-color: var(--accent); }
+  .search-box::before {
+    content: '🔍';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    pointer-events: none;
+  }
+
+  /* ── Grid ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px;
+    padding: 28px 32px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform .25s, box-shadow .25s, border-color .25s;
+    display: flex;
+    flex-direction: column;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,.5);
+    border-color: rgba(88,166,255,.35);
+  }
+  .card.hidden { display: none; }
+
+  .card-accent { height: 4px; }
+
+  .card-body { padding: 20px 22px; flex: 1; }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .card-icon {
+    font-size: 2rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .card-title-group { flex: 1; }
+  .card-number { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+  .card-title { font-size: 1.05rem; font-weight: 700; color: var(--text); line-height: 1.3; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .tag {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+  .tag-b2b { background: rgba(63,185,80,.15); color: var(--b2b); border: 1px solid rgba(63,185,80,.3); }
+  .tag-b2c { background: rgba(247,129,102,.15); color: var(--b2c); border: 1px solid rgba(247,129,102,.3); }
+  .tag-android { background: rgba(163,113,247,.15); color: var(--android); border: 1px solid rgba(163,113,247,.3); }
+  .tag-tier { background: rgba(88,166,255,.12); color: var(--accent); border: 1px solid rgba(88,166,255,.25); }
+
+  .card-desc { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+
+  /* Impact meter */
+  .impact-section { margin-bottom: 16px; }
+  .impact-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+  .impact-bars { display: flex; flex-direction: column; gap: 7px; }
+  .impact-row { display: flex; align-items: center; gap: 10px; }
+  .impact-name { font-size: 0.78rem; color: var(--text-muted); width: 80px; flex-shrink: 0; }
+  .impact-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .impact-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.8s cubic-bezier(.4,0,.2,1);
+  }
+  .impact-val { font-size: 0.72rem; color: var(--text-muted); width: 28px; text-align: right; flex-shrink: 0; }
+
+  /* Expand toggle */
+  .card-footer {
+    border-top: 1px solid var(--border);
+    padding: 0 22px;
+  }
+  .expand-btn {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    padding: 12px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: color .2s;
+  }
+  .expand-btn:hover { color: var(--accent); }
+  .expand-icon { transition: transform .3s; }
+  .expand-btn.open .expand-icon { transform: rotate(180deg); }
+
+  .card-detail {
+    display: none;
+    padding-bottom: 18px;
+  }
+  .card-detail.open { display: block; }
+
+  .detail-section { margin-top: 14px; }
+  .detail-title { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+
+  .use-cases { display: flex; flex-direction: column; gap: 6px; }
+  .use-case {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 0.82rem;
+    padding: 8px 10px;
+    background: var(--surface2);
+    border-radius: 8px;
+    border-left: 3px solid transparent;
+  }
+  .use-case.b2b-case { border-left-color: var(--b2b); }
+  .use-case.b2c-case { border-left-color: var(--b2c); }
+  .use-case-label { font-weight: 700; font-size: 0.7rem; text-transform: uppercase; flex-shrink: 0; margin-top: 1px; }
+  .use-case.b2b-case .use-case-label { color: var(--b2b); }
+  .use-case.b2c-case .use-case-label { color: var(--b2c); }
+  .use-case-text { color: var(--text-muted); line-height: 1.5; }
+
+  .android-detail {
+    background: rgba(163,113,247,.08);
+    border: 1px solid rgba(163,113,247,.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+  .android-detail strong { color: var(--android); }
+
+  .revenue-models { display: flex; flex-wrap: wrap; gap: 6px; }
+  .revenue-tag {
+    padding: 4px 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* Society quote */
+  .society-quote {
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, rgba(88,166,255,.06), rgba(163,113,247,.06));
+    border: 1px solid rgba(88,166,255,.2);
+    border-radius: 8px;
+    font-size: 0.83rem;
+    color: var(--text);
+    font-style: italic;
+    line-height: 1.6;
+  }
+  .society-quote::before { content: '"'; font-size: 1.4rem; color: var(--accent); line-height: 0; vertical-align: -.3em; margin-right: 4px; }
+
+  /* No results */
+  .no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+    display: none;
+  }
+  .no-results.show { display: block; }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px 32px;
+    border-top: 1px solid var(--border);
+    background: var(--surface2);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    justify-content: center;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  @media (max-width: 600px) {
+    header, .stats-bar, .controls, .grid, .legend { padding-left: 16px; padding-right: 16px; }
+    .grid { grid-template-columns: 1fr; gap: 14px; }
+    .controls { gap: 8px; }
+    .search-box input { width: 140px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>AI/ML Projects — Real-World Impact Map</h1>
+  <p>How each project solves real problems for businesses and people — and the difference it can make in the world</p>
+</header>
+
+<div class="stats-bar">
+  <div class="stat stat-all"><div class="stat-num">16</div><div class="stat-label">Total Projects</div></div>
+  <div class="stat stat-b2b"><div class="stat-num">14</div><div class="stat-label">B2B Ready</div></div>
+  <div class="stat stat-b2c"><div class="stat-num">12</div><div class="stat-label">B2C Ready</div></div>
+  <div class="stat stat-android"><div class="stat-num">16</div><div class="stat-label">Android Viable</div></div>
+</div>
+
+<div class="controls">
+  <span class="filter-label">Filter:</span>
+  <div class="filter-group">
+    <button class="chip active-all" data-filter="all">All</button>
+    <button class="chip" data-filter="b2b">B2B</button>
+    <button class="chip" data-filter="b2c">B2C</button>
+    <button class="chip" data-filter="both">B2B + B2C</button>
+    <button class="chip" data-filter="high-impact">High Impact</button>
+  </div>
+  <div class="search-box">
+    <input type="text" id="search" placeholder="Search projects..." autocomplete="off">
+  </div>
+</div>
+
+<div class="grid" id="grid">
+
+  <!-- CARD 1 -->
+  <div class="card" data-b2b="1" data-b2c="1" data-impact="medium" data-keywords="house price real estate prediction mortgage">
+    <div class="card-accent" style="background: linear-gradient(90deg,#58a6ff,#3fb950)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">🏠</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 1 · Tier 1 · Easy</div>
+          <div class="card-title">House Price Prediction</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-b2c">B2C</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Foundation</span>
+      </div>
+      <div class="card-desc">Predicts property prices using ML regression — XGBoost, Ridge, SHAP explainability — served via FastAPI with a live demo.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">Financial</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:85%;background:linear-gradient(90deg,#3fb950,#58a6ff)"></div></div>
+            <span class="impact-val">85%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Access</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:70%;background:linear-gradient(90deg,#a371f7,#58a6ff)"></div></div>
+            <span class="impact-val">70%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Transparency</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:90%;background:linear-gradient(90deg,#ffa657,#e3b341)"></div></div>
+            <span class="impact-val">90%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Banks & NBFCs embed it for instant home-loan LTV decisions — reducing appraisal time from days to seconds.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">PropTech platforms (NoBroker, MagicBricks) white-label it for their agent dashboards to price listings accurately.</span></div>
+            <div class="use-case b2c-case"><span class="use-case-label">B2C</span><span class="use-case-text">First-time home buyers check fair market value before negotiating — preventing overpayment by 5–15%.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> "Fair Price" — enter area, BHK, locality → instant estimated range with SHAP explanation ("location adds ₹8L, floor penalises ₹2L"). Works offline with a lite ONNX model.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">API per-call pricing</span>
+            <span class="revenue-tag">B2B SaaS subscription</span>
+            <span class="revenue-tag">Freemium → premium reports</span>
+          </div>
+        </div>
+        <div class="society-quote">Reduces information asymmetry in one of life's biggest financial decisions — buying a home — giving regular people the same data-driven edge that large developers already have.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="card" data-b2b="1" data-b2c="0" data-impact="medium" data-keywords="churn telecom bank subscription retention customer">
+    <div class="card-accent" style="background: linear-gradient(90deg,#3fb950,#e3b341)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">📉</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 2 · Tier 1 · Easy</div>
+          <div class="card-title">Customer Churn Prediction</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Foundation</span>
+      </div>
+      <div class="card-desc">Predicts which customers will leave — using LightGBM, SMOTE for imbalanced data, Streamlit dashboard, business cost framing.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">Business</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:88%;background:linear-gradient(90deg,#3fb950,#e3b341)"></div></div>
+            <span class="impact-val">88%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Employment</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:60%;background:linear-gradient(90deg,#58a6ff,#a371f7)"></div></div>
+            <span class="impact-val">60%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Service QoS</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:72%;background:linear-gradient(90deg,#ffa657,#f78166)"></div></div>
+            <span class="impact-val">72%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Telecom companies (Airtel, Jio) use it to proactively offer retention deals before customers port out.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">SaaS startups plug it into their CRM to flag at-risk accounts for the customer success team.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">OTT platforms (Hotstar, Zee5) predict subscription non-renewals weeks before billing date.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> Sales rep Android dashboard — daily "At-Risk Customers" list with call scripts, predicted save probability, and one-tap CRM update. Offline-first for field agents.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">Per-prediction API</span>
+            <span class="revenue-tag">CRM plugin SaaS</span>
+            <span class="revenue-tag">ROI-share model</span>
+          </div>
+        </div>
+        <div class="society-quote">Helps businesses stay financially healthy — which protects jobs, maintains service quality, and keeps prices competitive for end consumers.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 3 -->
+  <div class="card" data-b2b="1" data-b2c="0" data-impact="high" data-keywords="sales forecast inventory retail supply chain fmcg demand">
+    <div class="card-accent" style="background: linear-gradient(90deg,#e3b341,#ffa657)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">📦</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 3 · Tier 1 · Easy-Med</div>
+          <div class="card-title">Sales Forecasting System</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Foundation</span>
+      </div>
+      <div class="card-desc">Multi-horizon demand forecasting (7/30/90-day) using ARIMA, LightGBM, LSTM — Plotly dashboard for supply chain visibility.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">Food Waste</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:92%;background:linear-gradient(90deg,#3fb950,#e3b341)"></div></div>
+            <span class="impact-val">92%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Supply Chain</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:85%;background:linear-gradient(90deg,#ffa657,#e3b341)"></div></div>
+            <span class="impact-val">85%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">SME Growth</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:78%;background:linear-gradient(90deg,#58a6ff,#a371f7)"></div></div>
+            <span class="impact-val">78%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Kirana / D2C brands forecast weekly demand to order stock optimally — cutting 20-30% inventory waste.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Restaurant chains forecast footfall by outlet to plan staffing and ingredient procurement daily.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">FMCG distributors use 90-day forecasts to negotiate better supplier rates and warehouse allocation.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> "StockSense" for small shopkeepers — photo-scan inventory → AI forecasts what to reorder in 7 days with quantity suggestions. WhatsApp-friendly report output.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">₹500/mo SME SaaS</span>
+            <span class="revenue-tag">Enterprise API</span>
+            <span class="revenue-tag">Inventory financing upsell</span>
+          </div>
+        </div>
+        <div class="society-quote">India wastes ~40% of food post-harvest. Accurate demand forecasting at every node — from kirana to cold chain — directly reduces this waste and lowers food prices.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 4 -->
+  <div class="card" data-b2b="1" data-b2c="1" data-impact="high" data-keywords="image classification plant disease agriculture food medical vision">
+    <div class="card-accent" style="background: linear-gradient(90deg,#3fb950,#58a6ff)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">🌾</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 4 · Tier 2 · Medium</div>
+          <div class="card-title">Image Classification Pipeline</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-b2c">B2C</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Intermediate</span>
+      </div>
+      <div class="card-desc">ResNet/EfficientNet transfer learning, Grad-CAM explainability, ONNX export, MLflow tracking, GCP Cloud Run deployment.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">Agriculture</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:95%;background:linear-gradient(90deg,#3fb950,#e3b341)"></div></div>
+            <span class="impact-val">95%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Healthcare</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:82%;background:linear-gradient(90deg,#f78166,#ffa657)"></div></div>
+            <span class="impact-val">82%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Farmer Income</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:90%;background:linear-gradient(90deg,#ffa657,#3fb950)"></div></div>
+            <span class="impact-val">90%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2c-case"><span class="use-case-label">B2C</span><span class="use-case-text">Farmers snap a photo of diseased crops → instant diagnosis + treatment recommendation in local language (Hindi, Telugu, Tamil).</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Food processing companies use it for automated quality grading of fruits/vegetables at sorting lines.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Hospitals use it for skin lesion pre-screening at rural health camps where dermatologists are unavailable.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> "KisanEye" — point camera at any crop → real-time disease detection with confidence score, Grad-CAM heatmap highlighting the affected region, and offline inference via ONNX. No internet needed in fields.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">Agri-input co. B2B API</span>
+            <span class="revenue-tag">Govt. scheme integration</span>
+            <span class="revenue-tag">Freemium farmer app</span>
+          </div>
+        </div>
+        <div class="society-quote">India has 140 million farming households. A free camera-based crop disease detector can save harvests worth billions — no agronomist visit required. This is AI democratising expert knowledge at scale.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 5 -->
+  <div class="card" data-b2b="1" data-b2c="1" data-impact="high" data-keywords="object detection security surveillance retail traffic safety yolo">
+    <div class="card-accent" style="background: linear-gradient(90deg,#f78166,#ffa657)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">👁️</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 5 · Tier 2 · Medium</div>
+          <div class="card-title">Real-Time Object Detection</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-b2c">B2C</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Intermediate</span>
+      </div>
+      <div class="card-desc">YOLOv8 custom training on domain data, TensorRT optimisation, edge deployment, video inference pipeline via FastAPI.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">Safety</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:90%;background:linear-gradient(90deg,#f78166,#ffa657)"></div></div>
+            <span class="impact-val">90%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Retail Ops</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:80%;background:linear-gradient(90deg,#58a6ff,#a371f7)"></div></div>
+            <span class="impact-val">80%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Traffic</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:75%;background:linear-gradient(90deg,#e3b341,#3fb950)"></div></div>
+            <span class="impact-val">75%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2c-case"><span class="use-case-label">B2C</span><span class="use-case-text">Home security app: Android phone becomes a smart CCTV — alerts when a person enters, package detected, or vehicle spotted.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Retail stores measure footfall heatmaps, queue length, and shelf-stock levels without manual counting.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Construction site safety: detect workers without helmets/vests and raise instant alerts to supervisors.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> "GuardCam" — run YOLOv8 quantised model on-device (ONNX Runtime Android), live bounding boxes, configurable alert zones, motion clips saved locally. No cloud subscription for basic use.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">SaaS per-camera/month</span>
+            <span class="revenue-tag">Alert volume pricing</span>
+            <span class="revenue-tag">Hardware bundle</span>
+          </div>
+        </div>
+        <div class="society-quote">Makes professional-grade surveillance accessible to homes and small businesses that can't afford dedicated security infrastructure — improving neighbourhood safety at minimal cost.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 6 -->
+  <div class="card" data-b2b="1" data-b2c="1" data-impact="high" data-keywords="sentiment analysis review nlp brand ecommerce feedback opinion">
+    <div class="card-accent" style="background: linear-gradient(90deg,#a371f7,#58a6ff)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">💬</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 6 · Tier 2 · Medium</div>
+          <div class="card-title">Sentiment & Review Intelligence</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-b2c">B2C</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Intermediate</span>
+      </div>
+      <div class="card-desc">BERT fine-tuning + LoRA, aspect-based sentiment, NER for product names, A/B model testing — full NLP analytics platform.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">Consumer Power</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:88%;background:linear-gradient(90deg,#a371f7,#58a6ff)"></div></div>
+            <span class="impact-val">88%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Product Quality</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:82%;background:linear-gradient(90deg,#3fb950,#e3b341)"></div></div>
+            <span class="impact-val">82%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Fake Reviews</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:75%;background:linear-gradient(90deg,#f78166,#ffa657)"></div></div>
+            <span class="impact-val">75%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2c-case"><span class="use-case-label">B2C</span><span class="use-case-text">Shoppers paste Amazon reviews → AI summarises "90% loved battery life, 30% complained about the charger port" — no need to read 500 reviews.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Brand managers track product sentiment across Flipkart, Amazon, Twitter in real-time and get instant alerts on reputation spikes.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Political/NGO campaigns analyse public response to messages across social channels to improve communication.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> "ReviewRadar" — scan any product barcode → pull reviews from all platforms → BERT-powered aspect summary in 2 seconds. Smart shopping assistant integrated into purchase flow.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">Brand monitoring SaaS</span>
+            <span class="revenue-tag">API per 1K reviews</span>
+            <span class="revenue-tag">Consumer app freemium</span>
+          </div>
+        </div>
+        <div class="society-quote">Evens the playing field between corporations and consumers — giving individuals AI-powered review analysis that was previously only available to big brands with market research budgets.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 7 -->
+  <div class="card" data-b2b="1" data-b2c="1" data-impact="high" data-keywords="recommendation engine personalization ecommerce content streaming shopping">
+    <div class="card-accent" style="background: linear-gradient(90deg,#ffa657,#f78166)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">🎯</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 7 · Tier 2 · Hard</div>
+          <div class="card-title">Recommendation Engine</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-b2c">B2C</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Intermediate</span>
+      </div>
+      <div class="card-desc">Two-tower neural model, SASRec sequential recommendations, Feast feature store, NDCG/MAP evaluation, A/B simulation.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">Discovery</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:90%;background:linear-gradient(90deg,#ffa657,#f78166)"></div></div>
+            <span class="impact-val">90%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">SME Exposure</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:85%;background:linear-gradient(90deg,#3fb950,#58a6ff)"></div></div>
+            <span class="impact-val">85%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Diversity</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:65%;background:linear-gradient(90deg,#a371f7,#58a6ff)"></div></div>
+            <span class="impact-val">65%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2c-case"><span class="use-case-label">B2C</span><span class="use-case-text">EdTech apps recommend next learning modules personalised to each student's pace, weaknesses, and learning style.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">White-label recommendation API sold to D2C brands (Mamaearth, BoAt) for their own apps — replace expensive Salesforce Einstein.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">News platforms: ethical recommender that diversifies perspectives instead of creating filter bubbles.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> "DiscoverAI SDK" — drop-in Android library for any app to add personalised recommendations with 3 lines of code. SaaS model where app developers pay per MAU. Handles cold-start via onboarding quiz.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">Per-MAU pricing</span>
+            <span class="revenue-tag">Enterprise API contract</span>
+            <span class="revenue-tag">White-label SDK</span>
+          </div>
+        </div>
+        <div class="society-quote">Helps small Indian creators and sellers get discovered alongside giants — a fair recommendation engine can level the marketplace and surface quality products from tier-2/3 cities.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 8 -->
+  <div class="card" data-b2b="1" data-b2c="1" data-impact="high" data-keywords="rag document qa llm legal medical knowledge assistant enterprise chatbot">
+    <div class="card-accent" style="background: linear-gradient(90deg,#58a6ff,#a371f7)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">📚</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 8 · Tier 3 · Hard</div>
+          <div class="card-title">Production RAG System</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-b2c">B2C</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Advanced</span>
+      </div>
+      <div class="card-desc">PDF/web ingestion → Qdrant vector DB → hybrid BM25+dense retrieval → LLaMA3/Mistral LLM → RAGAS evaluation → Docker + AWS.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">Knowledge Access</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:95%;background:linear-gradient(90deg,#58a6ff,#a371f7)"></div></div>
+            <span class="impact-val">95%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Legal Aid</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:90%;background:linear-gradient(90deg,#ffa657,#f78166)"></div></div>
+            <span class="impact-val">90%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Education</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:88%;background:linear-gradient(90deg,#3fb950,#e3b341)"></div></div>
+            <span class="impact-val">88%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2c-case"><span class="use-case-label">B2C</span><span class="use-case-text">A citizen uploads any government scheme PDF in Hindi/Telugu → AI answers "Am I eligible?" in plain language — bridging the welfare delivery gap.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Law firms deploy it on their case archives — junior lawyers query 10 years of precedents in seconds, saving 80% of research time.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Hospitals use it on clinical guidelines + patient records: doctors query drug interactions, dosage protocols at the bedside.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> "DocTalk" — scan any document with phone camera → instantly ask questions in voice or text → receive grounded, cited answers. Works with tenancy agreements, insurance policies, RTI responses. Multilingual.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">Document seats/mo</span>
+            <span class="revenue-tag">Query volume pricing</span>
+            <span class="revenue-tag">Private deployment</span>
+          </div>
+        </div>
+        <div class="society-quote">The single highest-impact AI project for India: when a first-generation college student or a daily-wage worker can understand their legal rights, insurance policy, or loan terms — that is transformative equity.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 9 -->
+  <div class="card" data-b2b="1" data-b2c="1" data-impact="high" data-keywords="llm fine-tuning domain expert medical legal finance coding mistral llama">
+    <div class="card-accent" style="background: linear-gradient(90deg,#a371f7,#f78166)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">🧠</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 9 · Tier 3 · Hard</div>
+          <div class="card-title">LLM Fine-Tuning — Domain Expert</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-b2c">B2C</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Advanced</span>
+      </div>
+      <div class="card-desc">QLoRA fine-tuning of LLaMA3/Mistral on legal/medical/finance domain data → GGUF quantisation → vLLM/Ollama serving.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">Expert Access</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:96%;background:linear-gradient(90deg,#a371f7,#f78166)"></div></div>
+            <span class="impact-val">96%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Healthcare</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:90%;background:linear-gradient(90deg,#3fb950,#58a6ff)"></div></div>
+            <span class="impact-val">90%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Financial Lit.</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:85%;background:linear-gradient(90deg,#e3b341,#ffa657)"></div></div>
+            <span class="impact-val">85%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2c-case"><span class="use-case-label">B2C</span><span class="use-case-text">Medical LLM on Android: patients in rural areas describe symptoms in local language → triage advice + "visit a doctor if X happens" — supporting India's 1:10,000 doctor-patient ratio problem.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Legal aid NGOs deploy private law LLM for paralegals — draft demand notices, understand FIR rights, know bail conditions in plain language.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">FinTech apps deploy finance LLM as an investment advisor for the next 400 million investors entering stock markets.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> Run quantised GGUF model (1–3GB) entirely on-device via llama.cpp Android binding — zero data leaves the phone. Critical for medical privacy. Supports offline use in low-connectivity areas.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">API subscription</span>
+            <span class="revenue-tag">On-premise licensing</span>
+            <span class="revenue-tag">NGO/Govt grants</span>
+          </div>
+        </div>
+        <div class="society-quote">A fine-tuned medical LLM that works offline in a village with no doctor nearby could save lives. A legal LLM that explains rights to someone being wrongfully detained could change lives. This is AI at its most important.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 10 -->
+  <div class="card" data-b2b="1" data-b2c="1" data-impact="high" data-keywords="ai agent autonomous research assistant multi-agent crewai langgraph productivity">
+    <div class="card-accent" style="background: linear-gradient(90deg,#e3b341,#3fb950)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">🤖</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 10 · Tier 3 · Expert</div>
+          <div class="card-title">AI Agent System</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-b2c">B2C</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Advanced</span>
+      </div>
+      <div class="card-desc">Multi-agent LangGraph system: Researcher + Analyst + Writer + Critic agents, web/PDF/SQL tools, long-term memory, WebSocket streaming.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">Productivity</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:92%;background:linear-gradient(90deg,#e3b341,#3fb950)"></div></div>
+            <span class="impact-val">92%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Small Business</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:85%;background:linear-gradient(90deg,#58a6ff,#a371f7)"></div></div>
+            <span class="impact-val">85%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Research Access</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:88%;background:linear-gradient(90deg,#ffa657,#f78166)"></div></div>
+            <span class="impact-val">88%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2c-case"><span class="use-case-label">B2C</span><span class="use-case-text">A student asks "Compare government schemes for SC/ST students in Telangana" → agent researches, analyses eligibility, writes a clear comparison report in 30 seconds.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Consulting firms: junior analyst agent researches market sizing, competitor landscape, and financial data — producing reports at 10x speed.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">HR teams: agent screens 500 resumes, cross-references requirements, schedules interviews — autonomous hiring pipeline.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> Voice-driven research agent on Android — speak a research question, watch agents work in real-time via WebSocket streaming, receive a structured report as a shareable PDF. Human-in-the-loop approval points before sending emails.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">Per-task credits</span>
+            <span class="revenue-tag">Team subscription</span>
+            <span class="revenue-tag">Enterprise deployment</span>
+          </div>
+        </div>
+        <div class="society-quote">Gives individuals and small organisations the research capability of a well-funded team — a solo entrepreneur in Nashik gets the same competitive intelligence as a Mumbai consulting firm.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 11 -->
+  <div class="card" data-b2b="1" data-b2c="0" data-impact="medium" data-keywords="mlops platform ci cd monitoring drift airflow mlflow fraud detection">
+    <div class="card-accent" style="background: linear-gradient(90deg,#58a6ff,#3fb950)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">⚙️</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 11 · Tier 3 · Expert</div>
+          <div class="card-title">MLOps Platform</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Advanced</span>
+      </div>
+      <div class="card-desc">Full ML lifecycle: DVC versioning, Feast feature store, Airflow pipelines, MLflow registry, CI/CD → ECS, canary deployment, Grafana monitoring.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">AI Reliability</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:92%;background:linear-gradient(90deg,#58a6ff,#3fb950)"></div></div>
+            <span class="impact-val">92%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Startup Enabler</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:80%;background:linear-gradient(90deg,#ffa657,#e3b341)"></div></div>
+            <span class="impact-val">80%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Governance</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:75%;background:linear-gradient(90deg,#a371f7,#f78166)"></div></div>
+            <span class="impact-val">75%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">AI startups license this as a managed MLOps backend — avoiding 6 months of platform engineering to focus on their core product.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Healthcare providers deploy it to ensure regulated ML models are monitored for drift before they cause misdiagnoses.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Government digital service teams use it to manage citizen-facing AI models with full audit trails for accountability.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> MLOps monitoring dashboard for Android — real-time model performance, drift alerts, deployment status, one-tap rollback for on-call engineers. Push notifications for model degradation events.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">Managed SaaS platform</span>
+            <span class="revenue-tag">Per-model-run pricing</span>
+            <span class="revenue-tag">On-prem license</span>
+          </div>
+        </div>
+        <div class="society-quote">Trustworthy AI requires reliable operations. An MLOps platform that keeps AI models honest, auditable, and accountable is foundational infrastructure for safe AI deployment across healthcare, finance, and governance.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 12 -->
+  <div class="card" data-b2b="1" data-b2c="1" data-impact="high" data-keywords="multimodal vision language invoice ocr medical image voice whisper shopping">
+    <div class="card-accent" style="background: linear-gradient(90deg,#f78166,#a371f7)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">🖼️</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 12 · Tier 3 · Expert</div>
+          <div class="card-title">Multimodal AI App</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-b2c">B2C</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Advanced</span>
+      </div>
+      <div class="card-desc">LLaVA/InternVL vision-language model, Whisper voice input, Stable Diffusion image generation, full-stack FastAPI + React, GPU on GCP.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">Accessibility</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:94%;background:linear-gradient(90deg,#f78166,#a371f7)"></div></div>
+            <span class="impact-val">94%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Literacy Gap</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:88%;background:linear-gradient(90deg,#ffa657,#e3b341)"></div></div>
+            <span class="impact-val">88%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Health Equity</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:85%;background:linear-gradient(90deg,#3fb950,#58a6ff)"></div></div>
+            <span class="impact-val">85%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2c-case"><span class="use-case-label">B2C</span><span class="use-case-text">Visually impaired users: Android phone camera describes everything in the frame via voice — navigation, reading menus, identifying medicines by label.</span></div>
+            <div class="use-case b2c-case"><span class="use-case-label">B2C</span><span class="use-case-text">Photograph your prescription + voice question in Telugu → AI explains dosage in plain language, warns about interactions.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Businesses photograph invoices/receipts → instant structured extraction to accounting software — GST-ready automation for 60M+ Indian SMEs.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> "LensAI" — point camera at anything, speak your question in any Indian language, get a smart answer. Prescription reader, invoice scanner, visual assistant for disability — all in one app. Camera + Whisper + VLM running in pipeline.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">Per-image API</span>
+            <span class="revenue-tag">SME invoice SaaS</span>
+            <span class="revenue-tag">Accessibility grants</span>
+          </div>
+        </div>
+        <div class="society-quote">For India's 26 million visually impaired citizens and 300 million people with low literacy, a multimodal AI that sees, listens, and speaks is not a feature — it is independence and dignity.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 13 -->
+  <div class="card" data-b2b="1" data-b2c="1" data-impact="high" data-keywords="fraud detection fintech payment real-time kafka redis gnn banking">
+    <div class="card-accent" style="background: linear-gradient(90deg,#ffa657,#3fb950)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">🛡️</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 13 · Tier 3 · Hard</div>
+          <div class="card-title">Real-Time Fraud Detection</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-b2c">B2C</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Advanced</span>
+      </div>
+      <div class="card-desc">XGBoost + GNN ensemble, Kafka streaming, Redis feature serving, &lt;10ms p99 latency, SHAP explainability (regulatory), live fraud dashboard.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">Financial Safety</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:96%;background:linear-gradient(90deg,#ffa657,#3fb950)"></div></div>
+            <span class="impact-val">96%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Trust in UPI</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:92%;background:linear-gradient(90deg,#58a6ff,#a371f7)"></div></div>
+            <span class="impact-val">92%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Inclusion</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:85%;background:linear-gradient(90deg,#e3b341,#f78166)"></div></div>
+            <span class="impact-val">85%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2c-case"><span class="use-case-label">B2C</span><span class="use-case-text">Android banking app: every UPI transaction scored in &lt;10ms — suspicious ones show a "Verify before sending" nudge before money leaves.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Payment gateways (Razorpay, PayU) embed it as a fraud API — replacing expensive Sift or Kount subscriptions.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Cooperative banks and MFIs in rural areas get enterprise-grade fraud protection at a fraction of the cost — enabling safe digital lending to underbanked populations.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> "SafePay SDK" — Android library that adds real-time fraud scoring to any payment app. Offline risk heuristics on-device, cloud GNN model for complex patterns. Banks integrate in a sprint, not quarters.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">Per-transaction fee</span>
+            <span class="revenue-tag">SLA-based contract</span>
+            <span class="revenue-tag">Fraud losses insured</span>
+          </div>
+        </div>
+        <div class="society-quote">UPI processes 13 billion transactions/month in India. A fraud detection system protecting first-time digital banking users — pensioners, rural workers, street vendors — from scams is critical infrastructure for financial inclusion.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 14 -->
+  <div class="card" data-b2b="1" data-b2c="1" data-impact="high" data-keywords="reinforcement learning rl rlhf dpo ppo dqn reward model alignment llm game ai">
+    <div class="card-accent" style="background: linear-gradient(90deg,#e3b341,#a371f7)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">🎮</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 14 · Tier 4 · Hard</div>
+          <div class="card-title">RL System + RLHF Alignment</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-b2c">B2C</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Deep Specialisation · AI Alignment</span>
+      </div>
+      <div class="card-desc">DQN → PPO game agents + full RLHF pipeline: reward model from human preferences, PPO loop via TRL, DPO fine-tuning — covers the complete RL domain — from DQN to RLHF alignment.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">AI Safety</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:92%;background:linear-gradient(90deg,#e3b341,#a371f7)"></div></div>
+            <span class="impact-val">92%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Alignment</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:88%;background:linear-gradient(90deg,#a371f7,#58a6ff)"></div></div>
+            <span class="impact-val">88%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Robotics</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:75%;background:linear-gradient(90deg,#3fb950,#e3b341)"></div></div>
+            <span class="impact-val">75%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">AI companies building chatbots use RLHF/DPO to align LLM responses with company tone, safety policies, and brand guidelines — without manual prompt engineering.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">EdTech platforms use RL agents to personalise learning paths — the agent learns which content sequence maximises student retention via reward signals.</span></div>
+            <div class="use-case b2c-case"><span class="use-case-label">B2C</span><span class="use-case-text">A personal finance app uses RL to learn each user's spending habits and nudge them toward saving goals — adapting its strategy based on user responses.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> "AlignBot" — a side-by-side LLM demo app showing Base vs RLHF-aligned responses to the same prompts. Users rate responses, their feedback contributes to a live reward model update. Makes AI alignment tangible.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">Alignment-as-a-service API</span>
+            <span class="revenue-tag">RL personalisation SDK</span>
+            <span class="revenue-tag">Research lab licensing</span>
+          </div>
+        </div>
+        <div class="society-quote">RLHF is the core technique that makes LLMs safe and helpful rather than harmful. Understanding and building it means you can make AI systems that genuinely align with human values — one of the most important challenges of our time.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 15 -->
+  <div class="card" data-b2b="1" data-b2c="1" data-impact="high" data-keywords="audio speech whisper asr tts diarization transcription voice indian language accessibility">
+    <div class="card-accent" style="background: linear-gradient(90deg,#58a6ff,#3fb950)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">🎙️</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 15 · Tier 4 · Medium</div>
+          <div class="card-title">Audio & Speech Intelligence Platform</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-b2c">B2C</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Deep Specialisation · Voice AI</span>
+      </div>
+      <div class="card-desc">Whisper fine-tuned on Indian languages, speaker diarization via pyannote, VITS TTS, real-time WebSocket transcription — closes the full Audio & Speech phase.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">Language Access</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:96%;background:linear-gradient(90deg,#58a6ff,#3fb950)"></div></div>
+            <span class="impact-val">96%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Accessibility</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:90%;background:linear-gradient(90deg,#a371f7,#f78166)"></div></div>
+            <span class="impact-val">90%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Rural Reach</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:88%;background:linear-gradient(90deg,#ffa657,#e3b341)"></div></div>
+            <span class="impact-val">88%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2c-case"><span class="use-case-label">B2C</span><span class="use-case-text">Farmers and rural users who can't read or type interact with AI services entirely by voice in Telugu, Hindi, or Tamil — removing the literacy barrier from digital access.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Call centres use diarization + ASR to automatically transcribe, summarise, and tag every customer call for QA and compliance — saving thousands of manual review hours.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Court reporting: real-time transcription of proceedings in multiple Indian languages with speaker labels — making judicial records accurate and searchable.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> "BharatVoice" — real-time speech-to-text in 10 Indian languages using fine-tuned Whisper running on-device via ONNX. Tap to record, get instant transcript, one-tap translate to English. Works offline. Integrates with WhatsApp share.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">Per-minute transcription</span>
+            <span class="revenue-tag">Call centre SaaS</span>
+            <span class="revenue-tag">Govt. accessibility contract</span>
+          </div>
+        </div>
+        <div class="society-quote">India has 22 official languages and hundreds of dialects — yet most voice AI works only in English. A fine-tuned multilingual ASR model is not a product feature, it is a bridge between 800 million people and the digital economy.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARD 16 -->
+  <div class="card" data-b2b="1" data-b2c="0" data-impact="high" data-keywords="tabnet tabular deep learning llm safety guardrails red teaming differential privacy math foundations regulated">
+    <div class="card-accent" style="background: linear-gradient(90deg,#f78166,#58a6ff)"></div>
+    <div class="card-body">
+      <div class="card-top">
+        <div class="card-icon">🔒</div>
+        <div class="card-title-group">
+          <div class="card-number">Project 16 · Tier 4 · Hard</div>
+          <div class="card-title">Safe AI + Tabular Deep Learning</div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-b2b">B2B</span>
+        <span class="tag tag-android">Android</span>
+        <span class="tag tag-tier">Deep Specialisation · Safe AI</span>
+      </div>
+      <div class="card-desc">TabNet / FT-Transformer vs XGBoost benchmark + NeMo Guardrails + Llama Guard red-teaming + DP-SGD + math-from-scratch notebooks — three gaps in one project.</div>
+      <div class="impact-section">
+        <div class="impact-label">Societal Impact Dimensions</div>
+        <div class="impact-bars">
+          <div class="impact-row">
+            <span class="impact-name">AI Trustworthiness</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:94%;background:linear-gradient(90deg,#f78166,#58a6ff)"></div></div>
+            <span class="impact-val">94%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Privacy</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:88%;background:linear-gradient(90deg,#a371f7,#f78166)"></div></div>
+            <span class="impact-val">88%</span>
+          </div>
+          <div class="impact-row">
+            <span class="impact-name">Regulation Ready</span>
+            <div class="impact-bar-bg"><div class="impact-bar-fill" style="width:85%;background:linear-gradient(90deg,#e3b341,#3fb950)"></div></div>
+            <span class="impact-val">85%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button class="expand-btn" onclick="toggle(this)">
+        <span>Use cases, Android & Revenue</span>
+        <span class="expand-icon">▾</span>
+      </button>
+      <div class="card-detail">
+        <div class="detail-section">
+          <div class="detail-title">Real-World Use Cases</div>
+          <div class="use-cases">
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Hospitals deploying AI chatbots use Llama Guard + NeMo Guardrails to ensure no medical advice crosses into harmful territory — mandatory before any clinical deployment.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Banks use TabNet for credit scoring on thin-file customers (no credit history) where FT-Transformer outperforms XGBoost — expanding financial inclusion safely.</span></div>
+            <div class="use-case b2b-case"><span class="use-case-label">B2B</span><span class="use-case-text">Enterprises preparing for EU AI Act and India's DPDP Bill use this project's safety audit framework — red-team reports and DP-SGD training become compliance artefacts.</span></div>
+          </div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Android Experience</div>
+          <div class="android-detail"><strong>App Idea:</strong> Safety monitoring dashboard for Android — on-call engineers see real-time toxicity scores, refusal rates, guardrail trigger logs, and privacy budget consumption. Push alerts when safety thresholds are breached in production.</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-title">Revenue Models</div>
+          <div class="revenue-models">
+            <span class="revenue-tag">AI compliance audit SaaS</span>
+            <span class="revenue-tag">Guardrails middleware API</span>
+            <span class="revenue-tag">Regulatory consulting</span>
+          </div>
+        </div>
+        <div class="society-quote">As AI enters hospitals, courts, and banks, safe AI is not optional — it is the price of admission. Building systems that are provably bounded, auditable, and privacy-preserving is what separates responsible AI from reckless deployment.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-results" id="noResults">No projects match your filter. Try a different combination.</div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--b2b)"></div> B2B — sold to businesses</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--b2c)"></div> B2C — sold to consumers</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--android)"></div> Android — viable as mobile app</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--impact-high)"></div> High societal impact</div>
+</div>
+
+<script>
+  function toggle(btn) {
+    btn.classList.toggle('open');
+    const detail = btn.closest('.card-footer').querySelector('.card-detail');
+    detail.classList.toggle('open');
+  }
+
+  const chips = document.querySelectorAll('.chip');
+  const cards = document.querySelectorAll('.card');
+  const searchInput = document.getElementById('search');
+  const noResults = document.getElementById('noResults');
+  let activeFilter = 'all';
+  let searchTerm = '';
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.className = 'chip');
+      activeFilter = chip.dataset.filter;
+      chip.classList.add('chip', `active-${activeFilter === 'high-impact' ? 'high' : activeFilter}`);
+      applyFilters();
+    });
+  });
+
+  searchInput.addEventListener('input', e => {
+    searchTerm = e.target.value.toLowerCase();
+    applyFilters();
+  });
+
+  function applyFilters() {
+    let visible = 0;
+    cards.forEach(card => {
+      const b2b = card.dataset.b2b === '1';
+      const b2c = card.dataset.b2c === '1';
+      const impact = card.dataset.impact;
+      const keywords = card.dataset.keywords || '';
+      const title = card.querySelector('.card-title').textContent.toLowerCase();
+      const desc = card.querySelector('.card-desc').textContent.toLowerCase();
+
+      let filterPass = true;
+      if (activeFilter === 'b2b') filterPass = b2b;
+      else if (activeFilter === 'b2c') filterPass = b2c;
+      else if (activeFilter === 'both') filterPass = b2b && b2c;
+      else if (activeFilter === 'high-impact') filterPass = impact === 'high';
+
+      let searchPass = true;
+      if (searchTerm) {
+        searchPass = title.includes(searchTerm) || desc.includes(searchTerm) || keywords.includes(searchTerm);
+      }
+
+      const show = filterPass && searchPass;
+      card.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    noResults.classList.toggle('show', visible === 0);
+  }
+</script>
+</body>
+</html>

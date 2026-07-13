@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>House Price Prediction — Pipeline Architecture</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css" />
+<style>
+  :root {
+    --surface-2: #ffffff;
+    --surface-1: #F5F4F0;
+    --surface-0: #EDEBE4;
+    --text-primary: #1a1a18;
+    --text-secondary: #5f5e5a;
+    --text-muted: #888780;
+    --border: #DEDCD3;
+    --border-strong: #B4B2A9;
+    --radius: 8px;
+    --teal-50: #E1F5EE; --teal-600: #0F6E56; --teal-800: #085041;
+    --purple-50: #EEEDFE; --purple-600: #534AB7; --purple-800: #3C3489;
+    --coral-50: #FAECE7; --coral-600: #993C1D; --coral-800: #712B13;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--surface-0);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 2rem 1rem;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; background: var(--surface-2); border-radius: 16px; padding: 2rem; border: 0.5px solid var(--border); }
+  h1 { font-size: 20px; font-weight: 500; margin: 0 0 4px; }
+  .lede { font-size: 14px; color: var(--text-secondary); margin: 0 0 1.5rem; }
+  .stage-row { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; padding: 10px 8px; border-radius: var(--radius); transition: background .15s; }
+  .stage-row:hover, .stage-row.active { background: var(--surface-1); }
+  .stage-line { width: 2px; flex: 1; min-height: 14px; background: var(--border); margin: 0 auto; }
+  .stage-line.done { background: var(--border-strong); }
+  .circle { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
+  .circle.pending { background: var(--surface-1); border: 0.5px solid var(--border); color: var(--text-muted); }
+  .circle.c-teal { background: var(--teal-50); color: var(--teal-800); }
+  .circle.c-purple { background: var(--purple-50); color: var(--purple-800); }
+  .circle.c-coral { background: var(--coral-50); color: var(--coral-800); }
+  .stage-title { font-size: 14px; font-weight: 500; margin: 0; }
+  .stage-sub { font-size: 13px; margin: 2px 0 0; color: var(--text-secondary); }
+  button { font-size: 14px; padding: 8px 14px; border-radius: var(--radius); border: 0.5px solid var(--border-strong); background: transparent; color: var(--text-primary); cursor: pointer; }
+  button:hover { background: var(--surface-1); }
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .metric-card { background: var(--surface-1); border-radius: var(--radius); padding: 10px 12px; }
+  .metric-label { font-size: 12px; color: var(--text-secondary); margin: 0 0 4px; }
+  .metric-value { font-size: 14px; font-weight: 500; margin: 0; }
+  .legend { font-size: 12px; color: var(--text-muted); margin-top: 1.5rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>House price prediction — pipeline architecture</h1>
+  <p class="lede">Click a stage, or press play to watch the data flow through the pipeline.</p>
+  <div id="stepper"></div>
+  <div style="display:flex; gap:8px; margin:1rem 0 1.5rem;">
+    <button id="playBtn"><i class="ti ti-player-play" style="margin-right:6px"></i>Play flow</button>
+    <button id="resetBtn"><i class="ti ti-refresh" style="margin-right:6px"></i>Reset</button>
+  </div>
+  <div id="detail"></div>
+  <p class="legend">Teal = data and analysis &middot; Purple = model pipeline &middot; Coral = output and serving</p>
+</div>
+<script>
+(function () {
+  var stages = [
+    { title: "Raw data", icon: "ti-database", color: "c-teal", subtitle: "Ames Housing dataset",
+      metrics: [["Rows", "1460"], ["Columns", "81"], ["Target", "SalePrice"], ["Source", "OpenML mirror, no Kaggle creds needed"]] },
+    { title: "EDA", icon: "ti-chart-bar", color: "c-teal", subtitle: "Distributions and hypothesis tests",
+      metrics: [["OverallQual vs price", "r = 0.79, p ≈ 0"], ["Central air t-test", "t = 17.3, p < 0.001"], ["95% CI mean price", "$176,843 – $185,000"]] },
+    { title: "Feature engineering", icon: "ti-adjustments", color: "c-purple", subtitle: "Impute, encode, scale, outliers",
+      metrics: [["Outliers dropped", "2"], ["Features after encoding", "258"], ["Missing values remaining", "0"]] },
+    { title: "Model training", icon: "ti-brain", color: "c-purple", subtitle: "5 candidates, 5-fold CV",
+      metrics: [["Best model", "Lasso"], ["Test R²", "0.932"], ["Test MAE", "$14,083"], ["Split", "80/20, fit after split"]] },
+    { title: "Optuna tuning", icon: "ti-target", color: "c-purple", subtitle: "Bayesian search on XGBoost",
+      metrics: [["Trials", "30 (TPE)"], ["XGBoost MAE before", "$14,773"], ["XGBoost MAE after", "$14,409"], ["Improvement", "-2.5%"]] },
+    { title: "SHAP explainability", icon: "ti-bulb", color: "c-coral", subtitle: "TreeExplainer on tuned model",
+      metrics: [["Top feature", "OverallQual"], ["2nd", "GrLivArea"], ["3rd", "KitchenQual"]] },
+    { title: "Artifacts", icon: "ti-box", color: "c-coral", subtitle: "Pipeline, model, columns saved",
+      metrics: [["feature_pipeline.joblib", "fitted transformer"], ["model.joblib", "tuned XGBoost"], ["feature_columns.joblib", "training column list"]] },
+    { title: "Serving", icon: "ti-rocket", color: "c-coral", subtitle: "FastAPI in a Docker image",
+      metrics: [["Endpoints", "/health, /predict"], ["Container", "model trained at build time"], ["Input", "partial feature dict accepted"]] }
+  ];
+  var active = 0, playing = false, timer = null;
+  var stepperEl = document.getElementById("stepper");
+  var detailEl = document.getElementById("detail");
+  var playBtn = document.getElementById("playBtn");
+
+  function renderStepper() {
+    stepperEl.innerHTML = "";
+    stages.forEach(function (s, i) {
+      var row = document.createElement("div");
+      row.className = "stage-row" + (i === active ? " active" : "");
+      var col = document.createElement("div");
+      col.style.cssText = "display:flex;flex-direction:column;align-items:center;";
+      var circle = document.createElement("div");
+      circle.className = "circle " + (i <= active ? s.color : "pending");
+      circle.innerHTML = '<i class="ti ' + s.icon + '"></i>';
+      col.appendChild(circle);
+      if (i < stages.length - 1) {
+        var line = document.createElement("div");
+        line.className = "stage-line" + (i < active ? " done" : "");
+        col.appendChild(line);
+      }
+      row.appendChild(col);
+      var textWrap = document.createElement("div");
+      textWrap.style.paddingTop = "4px";
+      var title = document.createElement("p");
+      title.className = "stage-title";
+      title.textContent = s.title;
+      var sub = document.createElement("p");
+      sub.className = "stage-sub";
+      sub.textContent = s.subtitle;
+      textWrap.appendChild(title);
+      textWrap.appendChild(sub);
+      row.appendChild(textWrap);
+      row.onclick = function () { stop(); active = i; render(); };
+      stepperEl.appendChild(row);
+    });
+  }
+
+  function renderDetail() {
+    var s = stages[active];
+    var grid = document.createElement("div");
+    grid.className = "metric-grid";
+    s.metrics.forEach(function (m) {
+      var card = document.createElement("div");
+      card.className = "metric-card";
+      var label = document.createElement("p");
+      label.className = "metric-label";
+      label.textContent = m[0];
+      var value = document.createElement("p");
+      value.className = "metric-value";
+      value.textContent = m[1];
+      card.appendChild(label);
+      card.appendChild(value);
+      grid.appendChild(card);
+    });
+    detailEl.innerHTML = "";
+    detailEl.appendChild(grid);
+  }
+
+  function render() { renderStepper(); renderDetail(); }
+
+  function stop() {
+    playing = false;
+    clearInterval(timer);
+    playBtn.innerHTML = '<i class="ti ti-player-play" style="margin-right:6px"></i>Play flow';
+  }
+
+  playBtn.onclick = function () {
+    if (playing) { stop(); return; }
+    playing = true;
+    playBtn.innerHTML = '<i class="ti ti-player-pause" style="margin-right:6px"></i>Pause';
+    timer = setInterval(function () {
+      active = (active + 1) % stages.length;
+      render();
+    }, 1500);
+  };
+
+  document.getElementById("resetBtn").onclick = function () { stop(); active = 0; render(); };
+
+  render();
+})();
+</script>
+</body>
+</html>
